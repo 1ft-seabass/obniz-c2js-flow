@@ -62,7 +62,7 @@ function SHT35(scl_pin, IIC_ADDR) {
   CLK_STRCH_STAT = CLK_STRETCH_DISABLE;
 }
 
-function init() {
+async function init() {
 
   // I2C を使えるようにする
   obniz.setVccGnd(vcc, gnd, "5v");
@@ -75,7 +75,6 @@ function init() {
   }
 
   let ret = NO_ERROR;
-  IIC_begin();
   ret = soft_reset();
   return ret;
 }
