@@ -59,7 +59,7 @@ const CMD_HEATER_OFF = 0x3066;
 #include "Seeed_SHT35.h"
 
 
-SHT35::SHT35(u8 scl_pin, u8 IIC_ADDR) {
+function SHT35(u8 scl_pin, u8 IIC_ADDR) {
     set_iic_addr(IIC_ADDR);
     set_scl_pin(scl_pin);
     CLK_STRCH_STAT = CLK_STRETCH_DISABLE;
@@ -98,11 +98,11 @@ function read_meas_data_single_shot(u16 cfg_cmd, float* temp, float* hum) {
 }
 
 
-float SHT35::get_temp(u16 temp) {
+function get_temp(u16 temp) {
     return (temp / 65535.00) * 175 - 45;
 }
 
-float SHT35::get_hum(u16 hum) {
+function get_hum(u16 hum) {
     return (hum / 65535.0) * 100.0;
 }
 
@@ -306,14 +306,14 @@ function read_bytes(u8* data, u32 data_len, clk_skch_t clk_strch_stat) {
 }
 
 
-void SHT_IIC_OPRTS::set_scl_pin(u8 scl) {
+function set_scl_pin(u8 scl) {
     SCK_PIN = scl;
 }
 
 /** @brief change the I2C address from default.
     @param IIC_ADDR: I2C address to be set
  * */
-void SHT_IIC_OPRTS::set_iic_addr(u8 IIC_ADDR) {
+function set_iic_addr(u8 IIC_ADDR) {
     _IIC_ADDR = IIC_ADDR;
 }
 
