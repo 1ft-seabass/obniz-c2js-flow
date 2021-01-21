@@ -322,4 +322,19 @@ var Obniz = require("obniz");
 var obniz = new Obniz("Obniz_ID");  // Obniz_ID は自分の obniz ID
 obniz.onconnect = async function () {
   console.log("-- obniz start --");
+
+  // https://wiki.seeedstudio.com/Grove-I2C_High_Accuracy_Temp%26Humi_Sensor-SHT35/
+  // こちらの実装に合わせて setup 関数を導入
+
+/*
+    SERIAL.begin(115200);
+    delay(10);
+    SERIAL.println("serial start!!");
+    if(sensor.init())
+    {
+      SERIAL.println("sensor init failed!!!");
+    }
+    delay(1000);
+*/
+  
 }
