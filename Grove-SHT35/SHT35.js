@@ -125,125 +125,6 @@ function get_hum(hum) {
   return (hum / 65535.0) * 100.0;
 }
 
-
-
-function temp_to_hex(temp) {
-  return (u16)((temp + 45) * 65535.0 / 175);
-}
-
-function hum_to_hex(hum) {
-  return (u16)(hum / 100.0 * 65535);
-}
-
-
-/******************************************************STATUS REG**************************************************/
-/******************************************************STATUS REG**************************************************/
-
-
-
-function read_reg_status(value) {
-  let ret = NO_ERROR;
-  value = 0;
-  // let stat[3] = {0}; // 3つの構造体を初期化している
-  let stat = [0, 0, 0];
-  CHECK_RESULT(ret, send_command(CMD_READ_SREG));
-  CHECK_RESULT(ret, request_bytes(stat, sizeof(stat)));
-  value |= stat[0] << 8;
-  value |= stat[1];
-  return ret;
-}
-
-
-
-function heaterStatus(status, stat) {
-  stat = ((status >> 13) & 0x01);
-  return NO_ERROR;
-}
-
-function heaterStatus(stat) {
-  let ret = NO_ERROR;
-  let status = 0;
-  CHECK_RESULT(ret, read_reg_status(status));
-  stat = ((status >> 13) & 0x01);
-  return ret;
-}
-/****************************************************/
-
-
-
-function reset_check(status, stat) {
-  stat = ((stat >> 4) & 0x01);
-  return NO_ERROR;
-}
-
-function reset_check(stat) {
-  let ret = NO_ERROR;
-  let status = 0;
-  CHECK_RESULT(ret, read_reg_status(status));
-  stat = ((stat >> 4) & 0x01);
-  return ret;
-}
-/****************************************************/
-
-function cmd_excu_stat(status, stat) {
-  stat = ((stat >> 1) & 0x01);
-  return NO_ERROR;
-}
-
-function cmd_excu_stat(stat) {
-  let ret = NO_ERROR;
-  let status = 0;
-  CHECK_RESULT(ret, read_reg_status(status));
-  stat = ((stat >> 1) & 0x01);
-  return ret;
-}
-/****************************************************/
-function last_write_checksum(status, stat) {
-  stat = ((status >> 0) & 0x01);
-  return NO_ERROR;
-}
-function last_write_checksum(stat) {
-  let ret = NO_ERROR;
-  let status = 0;
-  CHECK_RESULT(ret, read_reg_status(status));
-  stat = ((stat >> 0) & 0x01);
-  return ret;
-}
-
-/***********************************************************************************************/
-/**************************************EXEC COMMAND*********************************************/
-
-function change_heater_status(stat) {
-  let ret = NO_ERROR;
-
-  if (stat) {
-    ret = send_command(CMD_HEATER_ON);
-  } else {
-    ret = send_command(CMD_HEATER_OFF);
-  }
-
-  return ret;
-}
-
-/***********************************************************************************************/
-/*****************************************IIC OPRT**********************************************/
-function crc8(data, len) {
-
-  let POLYNOMIAL = 0x31;
-  let crc = 0xFF;
-
-  for (let j = len; j; --j) {
-    crc ^= data++;
-
-    for (let i = 8; i; --i) {
-      crc = (crc & 0x80)
-        ? (crc << 1) ^ POLYNOMIAL
-        : (crc << 1);
-    }
-  }
-  return crc;
-}
-
 async function send_command(cmd) {
   let ret = 0;
 
@@ -258,28 +139,6 @@ async function send_command(cmd) {
   let val2 = cmd & 0xFF;
   ret = obniz_i2c.write(SHT35_IIC_ADDR, [val1,val2]);
 
-  if (!ret) {
-    return NO_ERROR;
-  } else {
-    return ERROR_COMM;
-  }
-}
-
-
-function I2C_write_bytes(cmd, data, len) {
-  let crc = 0;
-  let ret = 0;
-  crc = crc8(data, len);
-
-  Wire.beginTransmission(_IIC_ADDR);
-  Wire.write((cmd >> 8) & 0xFF);
-  Wire.write(cmd & 0xFF);
-  //Wire.beginTransmission(_IIC_ADDR);
-  for (let i = 0; i < len; i++) {
-    Wire.write(data[i]);
-  }
-  Wire.write(crc);
-  ret = Wire.endTransmission();
   if (!ret) {
     return NO_ERROR;
   } else {
@@ -331,18 +190,6 @@ function read_bytes(data, data_len, clk_strch_stat) {
     data[i] = Wire.read();
   }
   return NO_ERROR;
-}
-
-
-function set_scl_pin(scl) {
-  SCK_PIN = scl;
-}
-
-/** @brief change the I2C address from default.
-    @param IIC_ADDR: I2C address to be set
- * */
-function set_iic_addr(IIC_ADDR) {
-  _IIC_ADDR = IIC_ADDR;
 }
 
 // obniz 実働コード
@@ -403,7 +250,7 @@ obniz.onconnect = async function () {
     console.log("-- SHT35 obniz --");
     console.log("temp",ret.temp);
     console.log("hum",ret.hum);
-    
+
     await obniz.wait(1000);
   }
 
