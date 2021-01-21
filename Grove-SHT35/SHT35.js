@@ -66,7 +66,7 @@ function SHT35(scl_pin, IIC_ADDR) {
 }
 
 function init() {
-    err_t ret = NO_ERROR;
+    let ret = NO_ERROR;
     IIC_begin();
     ret = soft_reset();
     return ret;
@@ -75,16 +75,16 @@ function init() {
 
 
 function soft_reset() {
-    err_t ret = NO_ERROR;
+    let ret = NO_ERROR;
     ret = send_command(CMD_SOFT_RST);
     return ret;
 }
 
 
 function read_meas_data_single_shot(cfg_cmd, temp, hum) {
-    err_t ret = NO_ERROR;
-    u8 data[6] = {0};
-    u16 temp_hex = 0, hum_hex = 0;
+    let ret = NO_ERROR;
+    let data[6] = {0};
+    let temp_hex = 0, hum_hex = 0;
     CHECK_RESULT(ret, send_command(cfg_cmd));
     CHECK_RESULT(ret, read_bytes(data, sizeof(data), CLK_STRCH_STAT));
 
@@ -108,11 +108,11 @@ function get_hum(hum) {
 
 
 
-u16 SHT35::temp_to_hex(temp) {
+function temp_to_hex(temp) {
     return (u16)((temp + 45) * 65535.0 / 175);
 }
 
-u16 SHT35::hum_to_hex(hum) {
+function hum_to_hex(hum) {
     return (u16)(hum / 100.0 * 65535);
 }
 
@@ -123,9 +123,9 @@ u16 SHT35::hum_to_hex(hum) {
 
 
 function read_reg_status(value) {
-    err_t ret = NO_ERROR;
+  let ret = NO_ERROR;
     *value = 0;
-    u8 stat[3] = {0};
+    let stat[3] = {0};
     CHECK_RESULT(ret, send_command(CMD_READ_SREG));
     CHECK_RESULT(ret, request_bytes(stat, sizeof(stat)));
     *value |= (u16)stat[0] << 8;
@@ -141,8 +141,8 @@ function heaterStatus(status, stat) {
 }
 
 function heaterStatus(stat) {
-    err_t ret = NO_ERROR;
-    u16 status = 0;
+  let ret = NO_ERROR;
+  let status = 0;
     CHECK_RESULT(ret, read_reg_status(&status));
     stat = ((status >> 13) & 0x01);
     return ret;
@@ -157,8 +157,8 @@ function reset_check(status, stat) {
 }
 
 function reset_check(stat) {
-    err_t ret = NO_ERROR;
-    u16 status = 0;
+  let ret = NO_ERROR;
+  let status = 0;
     CHECK_RESULT(ret, read_reg_status(&status));
     stat = ((stat >> 4) & 0x01);
     return ret;
@@ -171,8 +171,8 @@ function cmd_excu_stat(status, stat) {
 }
 
 function cmd_excu_stat(stat) {
-    err_t ret = NO_ERROR;
-    u16 status = 0;
+  let ret = NO_ERROR;
+  let status = 0;
     CHECK_RESULT(ret, read_reg_status(&status));
     stat = ((stat >> 1) & 0x01);
     return ret;
@@ -183,8 +183,8 @@ function last_write_checksum(status, stat) {
     return NO_ERROR;
 }
 function last_write_checksum(stat) {
-    err_t ret = NO_ERROR;
-    u16 status = 0;
+  let ret = NO_ERROR;
+  let status = 0;
     CHECK_RESULT(ret, read_reg_status(&status));
     stat = ((stat >> 0) & 0x01);
     return ret;
@@ -194,7 +194,7 @@ function last_write_checksum(stat) {
 /**************************************EXEC COMMAND*********************************************/
 
 function change_heater_status(stat) {
-    err_t ret = NO_ERROR;
+  let ret = NO_ERROR;
 
     if (stat) {
         ret = send_command(CMD_HEATER_ON);
@@ -209,13 +209,13 @@ function change_heater_status(stat) {
 /*****************************************IIC OPRT**********************************************/
 function crc8(data, len) {
 
-    const u8 POLYNOMIAL = 0x31;
-    u8 crc = 0xFF;
+  let POLYNOMIAL = 0x31;
+  let crc = 0xFF;
 
-    for (int j = len; j; --j) {
+    for (let j = len; j; --j) {
         crc ^= *data++;
 
-        for (int i = 8; i; --i) {
+        for (let i = 8; i; --i) {
             crc = (crc & 0x80)
                   ? (crc << 1) ^ POLYNOMIAL
                   : (crc << 1);
@@ -225,7 +225,7 @@ function crc8(data, len) {
 }
 
 function send_command(cmd) {
-    s32 ret = 0;
+  let ret = 0;
     Wire.beginTransmission(_IIC_ADDR);
     Wire.write((cmd >> 8) & 0xFF);
     Wire.write(cmd & 0xFF);
@@ -239,15 +239,15 @@ function send_command(cmd) {
 
 
 function I2C_write_bytes(cmd, data, len) {
-    u8 crc = 0;
-    s32 ret = 0;
+  let crc = 0;
+  let ret = 0;
     crc = crc8(data, len);
 
     Wire.beginTransmission(_IIC_ADDR);
     Wire.write((cmd >> 8) & 0xFF);
     Wire.write(cmd & 0xFF);
     //Wire.beginTransmission(_IIC_ADDR);
-    for (int i = 0; i < len; i++) {
+    for (let i = 0; i < len; i++) {
         Wire.write(data[i]);
     }
     Wire.write(crc);
@@ -260,8 +260,8 @@ function I2C_write_bytes(cmd, data, len) {
 }
 
 function request_bytes(data, data_len) {
-    err_t ret = NO_ERROR;
-    u32 time_out_count = 0;
+  let ret = NO_ERROR;
+  let time_out_count = 0;
     Wire.requestFrom(_IIC_ADDR, data_len);
     while (data_len != Wire.available()) {
         time_out_count++;
@@ -270,7 +270,7 @@ function request_bytes(data, data_len) {
         }
         delay(1);
     }
-    for (int i = 0; i < data_len; i++) {
+    for (let i = 0; i < data_len; i++) {
         data[i] = Wire.read();
     }
     return NO_ERROR;
@@ -278,8 +278,8 @@ function request_bytes(data, data_len) {
 
 /*SHT3X device is different from other general IIC device.*/
 function read_bytes(data, data_len, clk_strch_stat) {
-    err_t ret = NO_ERROR;
-    u32 time_out_count = 0;
+  let ret = NO_ERROR;
+  let time_out_count = 0;
     if (clk_strch_stat == CLK_STRETCH_ENABLE) {
         while (0 == digitalRead(SCK_PIN)) {
             yield();
@@ -299,7 +299,7 @@ function read_bytes(data, data_len, clk_strch_stat) {
         }
         delay(1);
     }
-    for (int i = 0; i < data_len; i++) {
+    for (let i = 0; i < data_len; i++) {
         data[i] = Wire.read();
     }
     return NO_ERROR;
@@ -307,14 +307,14 @@ function read_bytes(data, data_len, clk_strch_stat) {
 
 
 function set_scl_pin(scl) {
-    SCK_PIN = scl;
+  SCK_PIN = scl;
 }
 
 /** @brief change the I2C address from default.
     @param IIC_ADDR: I2C address to be set
  * */
 function set_iic_addr(IIC_ADDR) {
-    _IIC_ADDR = IIC_ADDR;
+  _IIC_ADDR = IIC_ADDR;
 }
 
 // obniz 実働コード
