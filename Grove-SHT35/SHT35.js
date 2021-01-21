@@ -81,9 +81,9 @@ async function init() {
 
 
 
-function soft_reset() {
+async function soft_reset() {
   let ret = NO_ERROR;
-  ret = send_command(CMD_SOFT_RST);
+  ret = await send_command(CMD_SOFT_RST);
   return ret;
 }
 
@@ -233,12 +233,20 @@ function crc8(data, len) {
   return crc;
 }
 
-function send_command(cmd) {
+async function send_command(cmd) {
   let ret = 0;
+
+  /*
   Wire.beginTransmission(_IIC_ADDR);
   Wire.write((cmd >> 8) & 0xFF);
   Wire.write(cmd & 0xFF);
   ret = Wire.endTransmission();
+  */
+
+  let val1 = (cmd >> 8) & 0xFF;
+  let val2 = cmd & 0xFF;
+  ret = obniz_i2c.write(SHT35_IIC_ADDR, [val1,val2]);
+
   if (!ret) {
     return NO_ERROR;
   } else {
