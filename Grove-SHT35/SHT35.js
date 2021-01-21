@@ -99,7 +99,7 @@ async function init() {
 }
 
 
-function read_meas_data_single_shot(cfg_cmd, temp, hum) {
+async function read_meas_data_single_shot(cfg_cmd) {
   let ret = NO_ERROR;
   let temp_hex = 0;
   let hum_hex = 0;
