@@ -246,6 +246,7 @@ obniz.onconnect = async function () {
 
   while(true){
 
+    // read_meas_data_single_shot(HIGH_REP_WITH_STRCH,&temp,&hum)
     let ret = await read_meas_data_single_shot(HIGH_REP_WITH_STRCH);
     console.log("-- SHT35 obniz --");
     console.log("temp",ret.temp);
