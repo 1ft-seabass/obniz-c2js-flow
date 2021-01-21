@@ -129,15 +129,6 @@ function read_meas_data_single_shot(cfg_cmd, temp, hum) {
   return ret;
 }
 
-
-function get_temp(temp) {
-  return (temp / 65535.00) * 175 - 45;
-}
-
-function get_hum(hum) {
-  return (hum / 65535.0) * 100.0;
-}
-
 async function send_command(cmd) {
   let ret = 0;
 
@@ -157,52 +148,6 @@ async function send_command(cmd) {
   } else {
     return ERROR_COMM;
   }
-}
-
-function request_bytes(data, data_len) {
-  let ret = NO_ERROR;
-  let time_out_count = 0;
-  Wire.requestFrom(_IIC_ADDR, data_len);
-  while (data_len != Wire.available()) {
-    time_out_count++;
-    if (time_out_count > 10) {
-      return ERROR_COMM;
-    }
-    delay(1);
-  }
-  for (let i = 0; i < data_len; i++) {
-    data[i] = Wire.read();
-  }
-  return NO_ERROR;
-}
-
-/*SHT3X device is different from other general IIC device.*/
-function read_bytes(data, data_len, clk_strch_stat) {
-  let ret = NO_ERROR;
-  let time_out_count = 0;
-  if (clk_strch_stat == CLK_STRETCH_ENABLE) {
-    while (0 == digitalRead(SCK_PIN)) {
-      yield();
-    }
-  } else {
-    Wire.beginTransmission(_IIC_ADDR);
-    while (Wire.endTransmission() == NACK_ON_ADDR) {
-      Wire.beginTransmission(_IIC_ADDR);
-    }
-  }
-
-  Wire.requestFrom(_IIC_ADDR, data_len);
-  while (data_len != Wire.available()) {
-    time_out_count++;
-    if (time_out_count > 10) {
-      return ERROR_COMM;
-    }
-    delay(1);
-  }
-  for (let i = 0; i < data_len; i++) {
-    data[i] = Wire.read();
-  }
-  return NO_ERROR;
 }
 
 // obniz 実働コード
