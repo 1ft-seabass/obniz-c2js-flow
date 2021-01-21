@@ -370,4 +370,41 @@ obniz.onconnect = async function () {
   await init();
   await obniz.wait(1000);
 
+　/*
+  u16 value=0;
+  u8 data[6]={0};
+  float temp,hum;
+  if(NO_ERROR!=sensor.read_meas_data_single_shot(HIGH_REP_WITH_STRCH,&temp,&hum))
+  {
+    SERIAL.println("read temp failed!!");
+    SERIAL.println("   ");
+    SERIAL.println("   ");
+    SERIAL.println("   ");
+  }
+  else
+  {
+    SERIAL.println("result======>");
+    SERIAL.print("temperature =");
+    SERIAL.println(temp);
+
+    SERIAL.print("humidity =");
+    SERIAL.println(hum);
+
+    SERIAL.println("   ");
+    SERIAL.println("   ");
+    SERIAL.println("   ");
+  }
+  delay(1000);
+  */
+
+  while(true){
+
+    let ret = await read_meas_data_single_shot(HIGH_REP_WITH_STRCH);
+    console.log("-- SHT35 obniz --");
+    console.log("temp",ret.temp);
+    console.log("hum",ret.hum);
+    
+    await obniz.wait(1000);
+  }
+
 }
