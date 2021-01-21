@@ -63,6 +63,17 @@ function SHT35(scl_pin, IIC_ADDR) {
 }
 
 function init() {
+
+  // I2C を使えるようにする
+  obniz.setVccGnd(vcc, gnd, "5v");
+  obniz_i2c = obniz.getFreeI2C();
+  let i2cres;
+  try {
+    i2cres = obniz_i2c.start({mode:"master", sda:2, scl:3, clock:400000, pull:"5v"});
+  } catch(e) {
+    console.log("error:",e);
+  }
+
   let ret = NO_ERROR;
   IIC_begin();
   ret = soft_reset();
