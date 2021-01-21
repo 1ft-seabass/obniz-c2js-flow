@@ -65,7 +65,18 @@ function SHT35(scl_pin, IIC_ADDR) {
 }
 */
 
+/*
+typedef enum {
+  CLK_STRETCH_DISABLE,
+  CLK_STRETCH_ENABLE,
+} clk_skch_t;
+*/
+
+const CLK_STRETCH_DISABLE = 0;
+const CLK_STRETCH_ENABLE = 1;
+
 const CLK_STRCH_STAT = CLK_STRETCH_DISABLE;
+
 
 async function init() {
 
