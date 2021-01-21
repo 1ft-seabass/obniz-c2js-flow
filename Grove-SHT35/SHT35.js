@@ -327,14 +327,18 @@ obniz.onconnect = async function () {
   // こちらの実装に合わせて setup 関数を導入
 
   /*
-      SERIAL.begin(115200);
-      delay(10);
-      SERIAL.println("serial start!!");
-      if(sensor.init())
-      {
-        SERIAL.println("sensor init failed!!!");
-      }
-      delay(1000);
+  SERIAL.begin(115200);
+  delay(10);
+  SERIAL.println("serial start!!");
+  if(sensor.init())
+  {
+    SERIAL.println("sensor init failed!!!");
+  }
+  delay(1000);
   */
+  
+  // init と delay 1000 をひとまず移植
+  await init();
+  await obniz.wait(1000);
 
 }
