@@ -104,8 +104,16 @@ function read_meas_data_single_shot(cfg_cmd, temp, hum) {
   // let data[6] = {0}; // 6つの構造体を初期化している
   data = [0, 0, 0, 0, 0, 0]; // 置き換え
   let temp_hex = 0, hum_hex = 0;
-  CHECK_RESULT(ret, send_command(cfg_cmd));
-  CHECK_RESULT(ret, read_bytes(data, sizeof(data), CLK_STRCH_STAT));
+
+  // CHECK_RESULT は検証ログのようなもの
+  // read_bytes は obniz の i2c.readWait に置き換え可能
+  // CHECK_RESULT(ret, send_command(cfg_cmd));
+  // CHECK_RESULT(ret, read_bytes(data, sizeof(data), CLK_STRCH_STAT));
+
+  ret = await send_command(cfg_cmd);
+  // console.log("read_meas_data_single_shot 1 ret", ret);
+  let data = await obniz_i2c.readWait(SHT35_IIC_ADDR, 6);
+  // console.log("read_meas_data_single_shot data:",data);
 
   temp_hex = (data[0] << 8) | data[1];
   hum_hex = (data[3] << 8) | data[4];
