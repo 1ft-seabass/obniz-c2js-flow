@@ -118,8 +118,13 @@ function read_meas_data_single_shot(cfg_cmd, temp, hum) {
   temp_hex = (data[0] << 8) | data[1];
   hum_hex = (data[3] << 8) | data[4];
 
-  temp = get_temp(temp_hex);
-  hum = get_hum(hum_hex);
+  temp = (temp_hex / 65535.00) * 175 - 45;
+  hum = (hum_hex / 65535.0) * 100.0;
+
+  ret = {
+    temp:temp,
+    hum:hum
+  }
 
   return ret;
 }
