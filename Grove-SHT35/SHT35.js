@@ -80,14 +80,6 @@ async function init() {
   }
 
   let ret = NO_ERROR;
-  ret = soft_reset();
-  return ret;
-}
-
-
-
-async function soft_reset() {
-  let ret = NO_ERROR;
   ret = await send_command(CMD_SOFT_RST);
   return ret;
 }
