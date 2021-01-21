@@ -16,6 +16,7 @@ const ERROR_OTHERS = -128;
 // VSCode で next occurrence Ctrl+D を多用して空白を選択し一括編集していく
 
 const DEFAULT_IIC_ADDR = 0x45;
+const SHT35_IIC_ADDR = DEFAULT_IIC_ADDR;
 const NACK_ON_ADDR = 2;
 
 const CLK_STRETCH_ENABLED = 0;
