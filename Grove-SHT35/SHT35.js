@@ -80,7 +80,8 @@ function soft_reset() {
 
 function read_meas_data_single_shot(cfg_cmd, temp, hum) {
     let ret = NO_ERROR;
-    let data[6] = {0};
+    // let data[6] = {0}; // 6つの構造体を初期化している
+    data = [0,0,0,0,0,0]; // 置き換え
     let temp_hex = 0, hum_hex = 0;
     CHECK_RESULT(ret, send_command(cfg_cmd));
     CHECK_RESULT(ret, read_bytes(data, sizeof(data), CLK_STRCH_STAT));
@@ -122,10 +123,11 @@ function hum_to_hex(hum) {
 function read_reg_status(value) {
   let ret = NO_ERROR;
     value = 0;
-    let stat[3] = {0};
+    // let stat[3] = {0}; // 3つの構造体を初期化している
+    let stat = [0,0,0];
     CHECK_RESULT(ret, send_command(CMD_READ_SREG));
     CHECK_RESULT(ret, request_bytes(stat, sizeof(stat)));
-    value |= (u16)stat[0] << 8;
+    value |= stat[0] << 8;
     value |= stat[1];
     return ret;
 }
