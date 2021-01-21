@@ -81,6 +81,9 @@ const CLK_STRCH_STAT = CLK_STRETCH_DISABLE;
 async function init() {
 
   // I2C を使えるようにする
+  let vcc = 1;
+  let gnd = 0;
+
   obniz.setVccGnd(vcc, gnd, "5v");
   obniz_i2c = obniz.getFreeI2C();
   let i2cres;
