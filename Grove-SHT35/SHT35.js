@@ -101,9 +101,10 @@ async function init() {
 
 function read_meas_data_single_shot(cfg_cmd, temp, hum) {
   let ret = NO_ERROR;
-  // let data[6] = {0}; // 6つの構造体を初期化している
-  data = [0, 0, 0, 0, 0, 0]; // 置き換え
-  let temp_hex = 0, hum_hex = 0;
+  let temp_hex = 0;
+  let hum_hex = 0;
+  let temp;
+  let hum;
 
   // CHECK_RESULT は検証ログのようなもの
   // read_bytes は obniz の i2c.readWait に置き換え可能
