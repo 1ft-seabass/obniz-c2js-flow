@@ -56,9 +56,6 @@ const CMD_HEATER_OFF = 0x3066;
 
 // Seeed_SHT35.cpp
 
-#include "Seeed_SHT35.h"
-
-
 function SHT35(scl_pin, IIC_ADDR) {
     set_iic_addr(IIC_ADDR);
     set_scl_pin(scl_pin);
@@ -91,8 +88,8 @@ function read_meas_data_single_shot(cfg_cmd, temp, hum) {
     temp_hex = (data[0] << 8) | data[1];
     hum_hex = (data[3] << 8) | data[4];
 
-    *temp = get_temp(temp_hex);
-    *hum = get_hum(hum_hex);
+    temp = get_temp(temp_hex);
+    hum = get_hum(hum_hex);
 
     return ret;
 }
@@ -124,12 +121,12 @@ function hum_to_hex(hum) {
 
 function read_reg_status(value) {
   let ret = NO_ERROR;
-    *value = 0;
+    value = 0;
     let stat[3] = {0};
     CHECK_RESULT(ret, send_command(CMD_READ_SREG));
     CHECK_RESULT(ret, request_bytes(stat, sizeof(stat)));
-    *value |= (u16)stat[0] << 8;
-    *value |= stat[1];
+    value |= (u16)stat[0] << 8;
+    value |= stat[1];
     return ret;
 }
 
@@ -143,7 +140,7 @@ function heaterStatus(status, stat) {
 function heaterStatus(stat) {
   let ret = NO_ERROR;
   let status = 0;
-    CHECK_RESULT(ret, read_reg_status(&status));
+    CHECK_RESULT(ret, read_reg_status(status));
     stat = ((status >> 13) & 0x01);
     return ret;
 }
@@ -159,7 +156,7 @@ function reset_check(status, stat) {
 function reset_check(stat) {
   let ret = NO_ERROR;
   let status = 0;
-    CHECK_RESULT(ret, read_reg_status(&status));
+    CHECK_RESULT(ret, read_reg_status(status));
     stat = ((stat >> 4) & 0x01);
     return ret;
 }
@@ -173,7 +170,7 @@ function cmd_excu_stat(status, stat) {
 function cmd_excu_stat(stat) {
   let ret = NO_ERROR;
   let status = 0;
-    CHECK_RESULT(ret, read_reg_status(&status));
+    CHECK_RESULT(ret, read_reg_status(status));
     stat = ((stat >> 1) & 0x01);
     return ret;
 }
@@ -185,7 +182,7 @@ function last_write_checksum(status, stat) {
 function last_write_checksum(stat) {
   let ret = NO_ERROR;
   let status = 0;
-    CHECK_RESULT(ret, read_reg_status(&status));
+    CHECK_RESULT(ret, read_reg_status(status));
     stat = ((stat >> 0) & 0x01);
     return ret;
 }
@@ -213,7 +210,7 @@ function crc8(data, len) {
   let crc = 0xFF;
 
     for (let j = len; j; --j) {
-        crc ^= *data++;
+        crc ^= data++;
 
         for (let i = 8; i; --i) {
             crc = (crc & 0x80)
