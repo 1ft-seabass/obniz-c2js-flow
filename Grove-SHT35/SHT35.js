@@ -57,11 +57,15 @@ const CMD_HEATER_OFF = 0x3066;
 
 // Seeed_SHT35.cpp
 
+/*
 function SHT35(scl_pin, IIC_ADDR) {
   set_iic_addr(IIC_ADDR);
   set_scl_pin(scl_pin);
   CLK_STRCH_STAT = CLK_STRETCH_DISABLE;
 }
+*/
+
+const CLK_STRCH_STAT = CLK_STRETCH_DISABLE;
 
 async function init() {
 
